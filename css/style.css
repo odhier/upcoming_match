@@ -1,0 +1,43 @@
+.mainsp h1 {
+    margin: 0 0 60px;
+    color: #fff;
+    text-shadow: 0px 1px 10px rgba(0, 0, 0, 1);
+    font-size: 2em;
+}
+.mainsp {
+    color: #fff;
+}
+.matchdtl {
+    padding: 30px 0 0;
+}
+.teamh {
+    width: 15%;
+    float: left;
+    position: relative;
+    bottom: 90px;
+    margin: 0 5% 0 10%;
+}
+.matchdtl img {
+    max-width: 100%;
+    margin: 0 0 10px;
+}
+.teamh h4 {
+    font-size: 1.1em;
+}
+.matchtime {
+    width: 40%;
+    float: left;
+}
+.teama {
+    width: 15%;
+    float: right;
+    position: relative;
+    bottom: 90px;
+    margin: 0 10% 0 5%;
+}
+.mainsp {
+    min-height: 370px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}

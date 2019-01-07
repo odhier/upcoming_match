@@ -16,19 +16,44 @@ class Upcoming_Match{
      * Class Constructor
      */
 	public function __construct() {
+        
+        register_activation_hook( __FILE__, array( &$this, 'prepare') );
 		
-		add_action( 'admin_menu', array( &$this, 'init' ) );
-	    add_action( 'admin_init', 'admin_init' );
+        add_action( 'admin_menu', array( &$this, 'init' ) );
+        
+		add_shortcode( 'up-match', array( &$this, 'get_shortcode' ));
+    }
+    public function prepare(){
+        $this->create_db();
     }
     /**
      * Admin Functions
      */
-    public function admin_init(){
-        global $pagenow;
-        if ( $pagenow == 'post-new.php' || $pagenow == 'post.php' || $pagenow == 'edit.php' ) {
-			add_action( 'admin_enqueue_scripts', array(&$this,'load_admin_things') );
-        }
+    public function load_menu(){
+        include('menu.php');
     }
+    public function create_db(){
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        
+        $table_name = $wpdb->prefix . 'upmatches';
+        $table = "CREATE TABLE IF NOT EXISTS $table_name (
+            id int unsigned NOT NULL AUTO_INCREMENT,
+            match_id int NOT NULL,
+            round int,
+            league varchar(25) NOT NULL,
+            country varchar(25) NOT NULL,
+            teamh varchar(25) NOT NULL,
+            teamh_img text NOT NULL,
+            teama varchar(25) NOT NULL,
+            teama_img text NOT NULL,
+            match_datetime text NOT NULL,
+            PRIMARY KEY (id)
+        ) $charset_collate;";
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $table );
+    }
+
     /**
      * Load Admin Scripts
      */
@@ -37,21 +62,29 @@ class Upcoming_Match{
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');
     }
+    public function upmatch_register_settings(){
+        register_setting( '_upmatch_setting', '_id_match' );
+    }
 
     /**
      * Frontend Functions
      */
     public function init(){
-       
-        add_menu_page( 'Upcoming Match Settings', 'Upcoming Match Setting', 'manage_options', 'upmatch' );
-		add_shortcode( 'upmatch', array( &$this, 'get_shortcode' ));
+        add_menu_page( 'Upcoming Match', 'Upcoming Match Setting', 'manage_options', 'upmatch', array( &$this,'load_menu'));
+        
+        add_action( 'admin_init', array( &$this, 'upmatch_register_settings' ));
     }
     /**
      * Shortcode Hooks
      */
-    public function get_shortcode(){
+    public function get_shortcode($atts){
+        // $a = shortcode_atts( array(
+        //     'league' => '',
+        // ), $atts );
+        
+        wp_enqueue_style( 'upmatch-css',  plugin_dir_url( __FILE__ ).'css/style.css', array(), '1.0', null );
         ?>
-            <div class="mainsp wow fadeIn" data-wow-delay="0.6s" style="background: url(https://static.yaboclub.com/banner/1542970622241438893.png) bottom center no-repeat">
+            <div class="mainsp wow fadeIn" data-wow-delay="0.6s" style="background: url(<?php echo plugin_dir_url( __FILE__ ).'img/bg.png';?>) bottom center no-repeat">
           <h1>UPCOMING MATCHES</h1>
           <h3 class="league">ENGLISH PREMIER LEAGUE</h3><strong>Matchday 21 of 38</strong><br><br><span>3rd January 2019 3:45 A.M </span>
           <div class="matchdtl">
