@@ -53,6 +53,18 @@ class Upcoming_Match{
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta( $table );
     }
+    public function crawling(){
+        $url = 'http://appwww.fctables.com/app/livescore/2/2019-01-07/';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $res = json_decode(curl_exec($ch));
+        curl_close($ch);
+        foreach($res->leagues as $league){
+           foreach($league->games as $game){
+               $league_name = $game->league_name;
+           }
+        }
+    }
 
     /**
      * Load Admin Scripts
@@ -102,6 +114,7 @@ class Upcoming_Match{
           </div>
         </div>
         <?php
+        $this->crawling();
     }
 }
 
