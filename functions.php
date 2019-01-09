@@ -154,23 +154,25 @@ class Upcoming_Match{
         // $a = shortcode_atts( array(
         //     'league' => '',
         // ), $atts );
-        
+        global $wpdb;
+        $match_id = esc_attr( get_option('_id_match') );
+        $match = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}upmatches WHERE match_id=$match_id", ARRAY_A); 
         wp_enqueue_style( 'upmatch-css',  plugin_dir_url( __FILE__ ).'css/style.css', 1, '1.0', null );
         ?>
             <div class="mainsp wow fadeIn" data-wow-delay="0.6s" style="background: url(<?php echo plugin_dir_url( __FILE__ ).'img/bg.png';?>) bottom center no-repeat">
           <h1>UPCOMING MATCHES</h1>
-          <h3 class="league">ENGLISH PREMIER LEAGUE</h3><strong>Matchday 21 of 38</strong><br><br><span>3rd January 2019 3:45 A.M </span>
+          <h3 class="league"><?php echo strtoupper($match['country'])." ".strtoupper($match['league']);?></h3><strong>Match <?php echo ucwords($match['round']);?></strong><br><br><span><?php echo date('d F Y H:i', strtotime($match['match_datetime']." +7 hours"));?> </span>
           <div class="matchdtl">
             <div class="teamh">
-              <img src="https://static.yaboclub.com/banner/15463919461151594262.png" alt="CHELSEA">
-              <h4>CHELSEA</h4>
+              <img src="<?php echo ($match['teamh_img']);?>" alt="<?php echo strtoupper($match['teamh']);?>">
+              <h4><?php echo strtoupper($match['teamh']);?></h4>
             </div>
             <div class="matchtime">
               
             </div>
             <div class="teama">
-              <img src="https://static.yaboclub.com/banner/15463919611028031391.png" alt="SOUTHAMPTON">
-              <h4>SOUTHAMPTON</h4>
+              <img src="<?php echo ($match['teama_img']);?>" alt="<?php echo strtoupper($match['teama']);?>">
+              <h4><?php echo strtoupper($match['teama']);?></h4>
             </div>
           </div>
         </div>
